@@ -25,6 +25,7 @@ public class PortioWebsiteTesting {
         //options.addArguments("--headless");
         options.addArguments("--window-size=1920,1080");
         options.addArguments("start-maximized");
+        options.addArguments("--incognito");
 
         driver = new ChromeDriver(options);
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
@@ -68,8 +69,16 @@ public class PortioWebsiteTesting {
     @Test //Bejelentkezés
     public void logIN(){
         indexPage.navigate();
+        indexPage.closeTheTermsAndConditionsPopUp();
+        indexPage.registrationProcess("David", "pass123", "diriczid@freemail", "something description text");
+        //eddigi volt a regisztráció
+        indexPage.logIn("David", "pass123");
+        String resultURL = indexPage.getCurrentURL();
 
+        Assertions.assertEquals("https://lennertamas.github.io/portio/landing.html", resultURL);
     }
+
+
 
 
 
