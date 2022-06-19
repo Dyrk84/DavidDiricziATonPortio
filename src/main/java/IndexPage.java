@@ -82,5 +82,14 @@ public class IndexPage {
     public String getCurrentURL(){
         return driver.getCurrentUrl();
     }
+
+    //további feladatokhoz bejelentkezés
+    public LandingPage forwardToLandingPage(String name, String password, String email, String description) {
+        closeTheTermsAndConditionsPopUp();
+        registrationProcess(name, password, email, description);
+        logIn(name, password);
+        return new LandingPage(driver);
+    }
+
 }
 

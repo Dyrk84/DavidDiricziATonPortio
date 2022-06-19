@@ -7,6 +7,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.time.Duration;
+import java.util.List;
 
 public class PortioWebsiteTesting {
 
@@ -36,9 +37,9 @@ public class PortioWebsiteTesting {
     /*
     A választott teszt alkalmazásnak legalább az alábbi funkcióit kell lefedni tesztekkel:
              (/) Regisztráció
-             (-) Bejelentkezés
+             (/) Bejelentkezés
              (/) Adatkezelési nyilatkozat használata
-             (-) Adatok listázása
+             (/) Adatok listázása
              (-) Több oldalas lista bejárása
              (-) Új adat bevitel
              (-) Ismételt és sorozatos adatbevitel adatforrásból
@@ -67,7 +68,7 @@ public class PortioWebsiteTesting {
     }
 
     @Test //Bejelentkezés
-    public void logIN(){
+    public void logIn(){
         indexPage.navigate();
         indexPage.closeTheTermsAndConditionsPopUp();
         indexPage.registrationProcess("David", "pass123", "diriczid@freemail", "something description text");
@@ -78,9 +79,14 @@ public class PortioWebsiteTesting {
         Assertions.assertEquals("https://lennertamas.github.io/portio/landing.html", resultURL);
     }
 
+    @Test //Adatok listázása
+    public void experiencesList(){
+        indexPage.navigate();
+        LandingPage landingPage = indexPage.forwardToLandingPage("David", "pass123", "diriczid@freemail", "something description text");
+        List<String> experiencesListFromPage = landingPage.experiencesListCreator();
+        List<String> listForTest = MethodsForTests.fileReader("files/experiences.txt");
 
+        Assertions.assertEquals(listForTest, experiencesListFromPage);
 
-
-
-
+    }
 }
