@@ -40,7 +40,7 @@ public class PortioWebsiteTesting {
              (/) Bejelentkezés
              (/) Adatkezelési nyilatkozat használata
              (/) Adatok listázása
-             (-) Több oldalas lista bejárása
+             (/) Több oldalas lista bejárása
              (-) Új adat bevitel
              (-) Ismételt és sorozatos adatbevitel adatforrásból
              (-) Meglévő adat módosítás
@@ -87,6 +87,15 @@ public class PortioWebsiteTesting {
         List<String> listForTest = MethodsForTests.fileReader("files/experiences.txt");
 
         Assertions.assertEquals(listForTest, experiencesListFromPage);
+    }
 
+    @Test //Több oldalas lista bejárása
+    public void blogPageTest(){
+        indexPage.navigate();
+        LandingPage landingPage = indexPage.forwardToLandingPage("David", "pass123", "diriczid@freemail", "something description text");
+        int postsNumbersFromSecondPageOfBlog = landingPage.numberOfPostsFromSecondPageOfBlog();
+        int inspectedPostsNumber = 3;
+
+        Assertions.assertEquals(inspectedPostsNumber, postsNumbersFromSecondPageOfBlog);
     }
 }

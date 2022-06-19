@@ -12,6 +12,10 @@ public class LandingPage {
     private final By experiencesButtonXpath = By.xpath("//*[@class=\"btn-group nav mt-5\"]//*[@href=\"#experience\"]");
     private final By experiencesListXpath = By.xpath("//*[@id=\"experience\"]//h4");
 
+    private final By buttonToBlogXpath = By.xpath("//*[@id=\"blog\"]//*[@class=\"blog-preview__header_button desktop\"]//*");
+    private final By buttonToNextPageOnBlogXpath = By.xpath("//*[@aria-label=\"Page navigation\"]//*[@rel=\"next\"]");
+    private final By postsDivsOnPageTwo = By.xpath("//*[@class=\"row\"]/*[@class=\"col-lg-4\"]");
+
     public LandingPage(WebDriver driver) {
         this.driver = driver;
     }
@@ -28,5 +32,13 @@ public class LandingPage {
             experiencesListString.add(experiencesListWE.get(i).getText());
         }
         return experiencesListString;
+    }
+
+    public int numberOfPostsFromSecondPageOfBlog(){
+        buttonClicker(buttonToBlogXpath);
+        buttonClicker(buttonToNextPageOnBlogXpath);
+        driver.getCurrentUrl();
+        List<WebElement> listOfPostsDivsOnPageTwo = driver.findElements(postsDivsOnPageTwo);
+        return listOfPostsDivsOnPageTwo.size();
     }
 }
