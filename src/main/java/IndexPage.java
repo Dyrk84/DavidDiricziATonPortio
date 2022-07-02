@@ -1,6 +1,8 @@
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
+import java.time.Duration;
+
 public class IndexPage {
 
 
@@ -23,7 +25,7 @@ public class IndexPage {
     private final By regEmailFieldXpath = By.xpath("//*[@id=\"register-email\"]");
     private final By regDescriptionFieldXpath = By.xpath("//*[@id=\"register-description\"]");
     private final By registerButtonXpath = By.xpath("//*[@class=\"formGroup\"]//*[@onclick=\"registerUser()\"]");
-    private final By registrationSuccessXpath = By.xpath("//*[@id=\"register-alert\"]");
+    private final By registrationSuccessXpath = By.id("register-alert");
     private final String cssValueNameReg = "display";
     private final String cssValueReg = "block";
 
@@ -60,7 +62,10 @@ public class IndexPage {
 
     // (/) Regisztráció
     public void registrationProcess(String name, String password, String email, String description) {
-        buttonClicker(registerTabXpath);
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(3));
+        if (validationForTests(registrationSuccessXpath, cssValueNameReg, cssValueReg)) {
+            buttonClicker(registerTabXpath);
+        }
         inputFieldLoader(regUserNameFieldXpath, name);
         inputFieldLoader(regPasswordFieldXpath, password);
         inputFieldLoader(regEmailFieldXpath, email);
@@ -70,6 +75,21 @@ public class IndexPage {
 
     public boolean checkRegistrationValidation() {
         return validationForTests(registrationSuccessXpath, cssValueNameReg, cssValueReg);
+    }
+
+    public String showRegistrationMessage() {
+        return driver.findElement(registrationSuccessXpath).getText();
+    }
+
+    public void registrationFieldsClearer() {
+        driver.findElement(regUserNameFieldXpath).clear();
+        driver.findElement(regPasswordFieldXpath).clear();
+        driver.findElement(regEmailFieldXpath).clear();
+        driver.findElement(regDescriptionFieldXpath).clear();
+    }
+
+    public int cookiesCounter() {
+        return driver.manage().getCookies().size();
     }
 
     // (/) Bejelentkezés
@@ -86,10 +106,10 @@ public class IndexPage {
 
     //további feladatokhoz bejelentkezés
     public void toTheWebsite() {
-            navigateToURL();
-            closeTheTermsAndConditionsPopUp();
-            registrationProcess("name", "password", "email", "description");
-            logIn("name", "password");
+        navigateToURL();
+        closeTheTermsAndConditionsPopUp();
+        registrationProcess("name", "password", "email", "description");
+        logIn("name", "password");
     }
 
 

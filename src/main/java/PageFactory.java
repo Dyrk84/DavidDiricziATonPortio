@@ -1,8 +1,8 @@
 import org.openqa.selenium.WebDriver;
 
-public class ClassFactory {
+public class PageFactory {
 
-    public static IndexPage newClass(String pageName, WebDriver driver){ //IndexPage a visszatérési típus, mert a főosztályból örökli az összes többi a driverjét
+    public static IndexPage pageSwitcher(String pageName, WebDriver driver){ //IndexPage a visszatérési típus, mert a főosztályból örökli az összes többi a driverjét
         switch (pageName){
             case "IndexPage": return new IndexPage(driver);
             case "LandingPage": return new LandingPage(driver);
