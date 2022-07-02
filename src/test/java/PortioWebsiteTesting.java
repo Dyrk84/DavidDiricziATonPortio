@@ -1,18 +1,21 @@
 import io.github.bonigarcia.wdm.WebDriverManager;
+import io.qameta.allure.Allure;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
+import java.io.ByteArrayInputStream;
 import java.time.Duration;
 import java.util.List;
 
 public class PortioWebsiteTesting {
 
     WebDriver driver;
-    IndexPage indexPage;
 
     @BeforeEach
     public void Setup() {
@@ -26,12 +29,11 @@ public class PortioWebsiteTesting {
         //options.addArguments("--headless");
         options.addArguments("--window-size=1920,1080");
         options.addArguments("start-maximized");
-        options.addArguments("--incognito");
+        //options.addArguments("--incognito");
 
         driver = new ChromeDriver(options);
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         driver.manage().window().maximize();
-        indexPage = new IndexPage(driver);
     }
 
     /*
@@ -41,49 +43,52 @@ public class PortioWebsiteTesting {
              (/) Adatkezelési nyilatkozat használata
              (/) Adatok listázása
              (/) Több oldalas lista bejárása
-             (-) Új adat bevitel
+             (/) Új adat bevitel
              (-) Ismételt és sorozatos adatbevitel adatforrásból
-             (-) Meglévő adat módosítás
+             (/) Meglévő adat módosítás
              (-) Adat vagy adatok törlése
              (-) Adatok lementése felületről
              (-) Kijelentkezés
     */
     @Test //Adatkezelési nyilatkozat használata
     public void privacyPolicyTest(){
-        indexPage.navigate(); //fellép az oldalra
-        indexPage.closeTheTermsAndConditionsPopUp(); //becsukja a popupot
-        boolean actual = indexPage.checkTermsAndConditionValidation(); //megnézi hogy a popup css-e mit ír, az alapján nézem, hogy becsukta-e a popupot
+        IndexPage page = ClassFactory.newClass("IndexPage", driver);
+        page.navigateToURL(); //fellép az oldalra
+        page.closeTheTermsAndConditionsPopUp(); //becsukja a popupot
+        boolean actual = page.checkTermsAndConditionValidation(); //megnézi hogy a popup css-e mit ír, az alapján nézem, hogy becsukta-e a popupot
 
         Assertions.assertFalse(actual);
     }
 
     @Test //Regisztráció
     public void registrationTest(){
-        indexPage.navigate();
-        indexPage.closeTheTermsAndConditionsPopUp();
-        indexPage.registrationProcess("David", "pass123", "diriczid@freemail", "something description text");
-        boolean actual = indexPage.checkRegistrationValidation();
+        IndexPage page = ClassFactory.newClass("IndexPage", driver);
+        page.navigateToURL();
+        page.closeTheTermsAndConditionsPopUp();
+        page.registrationProcess("David", "pass123", "diriczid@freemail", "something description text");
+        boolean actual = page.checkRegistrationValidation();
 
         Assertions.assertFalse(actual);
     }
 
     @Test //Bejelentkezés
     public void logIn(){
-        indexPage.navigate();
-        indexPage.closeTheTermsAndConditionsPopUp();
-        indexPage.registrationProcess("David", "pass123", "diriczid@freemail", "something description text");
+        IndexPage page = ClassFactory.newClass("IndexPage", driver);
+        page.navigateToURL();
+        page.closeTheTermsAndConditionsPopUp();
+        page.registrationProcess("David", "pass123", "diriczid@freemail", "something description text");
         //eddigi volt a regisztráció
-        indexPage.logIn("David", "pass123");
-        String resultURL = indexPage.getCurrentURL();
+        page.logIn("David", "pass123");
+        String resultURL = page.getCurrentURL();
 
         Assertions.assertEquals("https://lennertamas.github.io/portio/landing.html", resultURL);
     }
 
     @Test //Adatok listázása
     public void experiencesList(){
-        indexPage.navigate();
-        LandingPage landingPage = indexPage.forwardToLandingPage("David", "pass123", "diriczid@freemail", "something description text");
-        List<String> experiencesListFromPage = landingPage.experiencesListCreator();
+        LandingPage page = (LandingPage) ClassFactory.newClass("LandingPage", driver);
+        page.toTheWebsite();
+        List<String> experiencesListFromPage = page.experiencesListCreator();
         List<String> listForTest = MethodsForTests.fileReader("files/experiences.txt");
 
         Assertions.assertEquals(listForTest, experiencesListFromPage);
@@ -91,11 +96,29 @@ public class PortioWebsiteTesting {
 
     @Test //Több oldalas lista bejárása
     public void blogPageTest(){
-        indexPage.navigate();
-        LandingPage landingPage = indexPage.forwardToLandingPage("David", "pass123", "diriczid@freemail", "something description text");
-        int postsNumbersFromSecondPageOfBlog = landingPage.numberOfPostsFromSecondPageOfBlog();
+        LandingPage page = (LandingPage) ClassFactory.newClass("LandingPage", driver);
+        page.toTheWebsite();
+        int postsNumbersFromSecondPageOfBlog = page.numberOfPostsFromSecondPageOfBlog();
         int inspectedPostsNumber = 3;
 
         Assertions.assertEquals(inspectedPostsNumber, postsNumbersFromSecondPageOfBlog);
+    }
+
+    @Test //Új adat bevitel és Meglévő adat módosítás
+    public void cookieTest(){
+        ProfilePage page = (ProfilePage) ClassFactory.newClass("ProfilePage", driver);
+        page.navigateToURL();
+        page.closeTheTermsAndConditionsPopUp();
+        page.registrationProcess("David", "pass123", "diriczid@freemail", "something description text");
+        page.logIn("David", "pass123");
+        page.clickOnProfileButton();
+        Allure.addAttachment("profileScreenShot", new ByteArrayInputStream(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES)));
+        page.profileModifier("DefiantlyNotDavid", "Something bio description text", "06123456789");
+        Allure.addAttachment("profileFilledScreenShot", new ByteArrayInputStream(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES)));
+        page.clickOnSaveButton();
+        Allure.addAttachment("profileSavedScreenShot", new ByteArrayInputStream(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES)));
+        boolean cookieTestData = page.cookieTestData("David","DefiantlyNotDavid", "Something bio description text", "06123456789");
+
+        Assertions.assertTrue(cookieTestData); //a profilnév megegyezik, de már nem ugyanazok az adatok szerepelnek, így az átírás sikerült
     }
 }

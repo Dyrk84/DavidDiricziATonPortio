@@ -3,6 +3,7 @@ import org.openqa.selenium.WebDriver;
 
 public class IndexPage {
 
+
     WebDriver driver;
 
     public IndexPage(WebDriver driver) {
@@ -40,11 +41,11 @@ public class IndexPage {
     }
 
     public boolean validationForTests(By xpath, String cssValueName, String cssValue) {
-        return !driver.findElement(xpath).getCssValue(cssValueName).equals(cssValue);
+        return !driver.findElement(xpath).getCssValue(cssValueName).equals(cssValue); //megnézi hogy az webelemnél a mellé írt css változó értékét
         //működhetne így is: Boolean Display = driver.findElement(By.xpath("//*[@id='next']")).isDisplayed();
     }
 
-    public void navigate() {
+    public void navigateToURL() {
         driver.navigate().to(url);
     }
 
@@ -71,7 +72,7 @@ public class IndexPage {
         return validationForTests(registrationSuccessXpath, cssValueNameReg, cssValueReg);
     }
 
-    // (-) Bejelentkezés
+    // (/) Bejelentkezés
     public void logIn(String name, String password) {
         buttonClicker(loginTabXpath);
         inputFieldLoader(loginUsernameXpath, name);
@@ -79,17 +80,18 @@ public class IndexPage {
         buttonClicker(loginLoginButton);
     }
 
-    public String getCurrentURL(){
+    public String getCurrentURL() {
         return driver.getCurrentUrl();
     }
 
     //további feladatokhoz bejelentkezés
-    public LandingPage forwardToLandingPage(String name, String password, String email, String description) {
-        closeTheTermsAndConditionsPopUp();
-        registrationProcess(name, password, email, description);
-        logIn(name, password);
-        return new LandingPage(driver);
+    public void toTheWebsite() {
+            navigateToURL();
+            closeTheTermsAndConditionsPopUp();
+            registrationProcess("name", "password", "email", "description");
+            logIn("name", "password");
     }
+
 
 }
 
