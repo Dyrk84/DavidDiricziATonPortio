@@ -1,10 +1,12 @@
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
+import org.openqa.selenium.WebElement;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.URL;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class MethodsForTests {
 
@@ -69,5 +71,30 @@ public class MethodsForTests {
         if (myObj.exists() && myObj.isFile()) {
             myObj.delete();
         }
+    }
+
+    public static void folderCreator(String folderName) {
+        File folder = new File("files/" + folderName);
+        if (!folder.exists()) {
+            if (!folder.mkdir()) {
+                try {
+                    throw new IOException("Error creating directory.");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static List<String> filesNamesFromFolderIntoList(String folderName) {
+        File folder = new File("files/" + folderName);
+        File[] listOfFiles = folder.listFiles();
+        List<String> filenames = new ArrayList<>();
+
+        for (File file : listOfFiles) {
+            if (file.isFile()) {
+                filenames.add(file.getName());
+            }
+        }return filenames;
     }
 }

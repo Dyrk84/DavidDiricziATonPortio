@@ -1,7 +1,10 @@
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 import java.time.Duration;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 public class IndexPage {
 
@@ -35,7 +38,7 @@ public class IndexPage {
     private final By loginLoginButton = By.xpath("//*[@id=\"login\"]//*[@class=\"form\"]//*[@onclick=\"myFunction()\"]");
 
     public void buttonClicker(By buttonXPath) {
-        driver.findElement(buttonXPath).click();
+            driver.findElement(buttonXPath).click();
     }
 
     public void inputFieldLoader(By inputFieldXPath, String text) {
@@ -45,6 +48,10 @@ public class IndexPage {
     public boolean validationForTests(By xpath, String cssValueName, String cssValue) {
         return !driver.findElement(xpath).getCssValue(cssValueName).equals(cssValue); //megnézi hogy az webelemnél a mellé írt css változó értékét
         //működhetne így is: Boolean Display = driver.findElement(By.xpath("//*[@id='next']")).isDisplayed();
+    }
+
+    public List<WebElement> elementsFinder(By xpath){
+        return driver.findElements(xpath);
     }
 
     public void navigateToURL() {
@@ -111,6 +118,7 @@ public class IndexPage {
         registrationProcess("name", "password", "email", "description");
         logIn("name", "password");
     }
+
 
 
 }

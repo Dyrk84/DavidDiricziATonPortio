@@ -1,18 +1,22 @@
 import io.github.bonigarcia.wdm.WebDriverManager;
 import io.qameta.allure.Allure;
 import org.apache.commons.collections4.MultiValuedMap;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class PortioWebsiteTesting {
 
@@ -125,17 +129,17 @@ public class PortioWebsiteTesting {
 
     @Test //Ismételt és sorozatos adatbevitel adatforrásból
     public void registrationFromFileTest() {
-        int numberOrTestDataRow = 50;
+        int numberOfTestDataRow = 50;
         String accountHandlerListPath = "files/multivaluedMapForAccountHandlingInFile.csv";
 
         ProfilePage page = (ProfilePage) PageFactory.pageSwitcher("ProfilePage", driver);
         page.navigateToURL();
         page.closeTheTermsAndConditionsPopUp();
-        MultiValuedMap<Integer, String> generatedData = MethodsForTests.multivaluedMapWriterForAccountHandling(numberOrTestDataRow);
+        MultiValuedMap<Integer, String> generatedData = MethodsForTests.multivaluedMapWriterForAccountHandling(numberOfTestDataRow);
         MethodsForTests.deleteFile(accountHandlerListPath);
         MethodsForTests.MapToFiles(accountHandlerListPath, generatedData);
         List<List<String>> listForAccountHandling = MethodsForTests.fromFileToStringList(accountHandlerListPath);
-        for (int i = 0; i < listForAccountHandling.size()-1; i++) {
+        for (int i = 0; i < listForAccountHandling.size() - 1; i++) {
             page.registrationProcess(
                     listForAccountHandling.get(i).get(0),
                     listForAccountHandling.get(i).get(1),
@@ -146,6 +150,32 @@ public class PortioWebsiteTesting {
             Assertions.assertEquals("User registered!", actual); //mindegyikre megnézem, hogy sikerült-e regisztrálni
             page.registrationFieldsClearer();
         }
-        Assertions.assertEquals(numberOrTestDataRow, page.cookiesCounter()); //megnézem hogy a regisztrált accountok száma megegyezik-e a cookiek számával
+        Assertions.assertEquals(numberOfTestDataRow, page.cookiesCounter()); //megnézem hogy a regisztrált accountok száma megegyezik-e a cookiek számával
+    }
+
+    @Test //Adatok lementése felületről
+    public void downloadPicturesFromBlogPage() throws IOException {
+        String picturesFromBlog = "picturesFromBlog";
+
+        LandingPage page = (LandingPage) PageFactory.pageSwitcher("LandingPage", driver);
+        page.toTheWebsite();
+        MethodsForTests.folderCreator(picturesFromBlog);
+        page.pushTheButtonToTheBlog();
+        List<WebElement> picturesFromBlogList = page.picturesFromBlogIntoList();
+        page.jpgFromWebelementsIntoFolder(picturesFromBlog, picturesFromBlogList);
+        page.pushTheButtonToTheNextPageOfBlog();
+        picturesFromBlogList = page.picturesFromBlogIntoList();
+        page.jpgFromWebelementsIntoFolder(picturesFromBlog, picturesFromBlogList);
+
+        List<String> filesNames = MethodsForTests.filesNamesFromFolderIntoList(picturesFromBlog);
+        boolean result = (filesNames.size() > 6 && filesNames.size() < 13); //Egy oldalon 6 kép van és összesen 2 oldal van
+
+        Assertions.assertTrue(result);
+    }
+
+    @AfterEach
+    public void testShutDown() {
+        driver.close();
+        driver.quit();
     }
 }
