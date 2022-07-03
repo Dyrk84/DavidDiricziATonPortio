@@ -16,7 +16,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 public class PortioWebsiteTesting {
 
@@ -51,7 +50,7 @@ public class PortioWebsiteTesting {
              (/) Új adat bevitel
              (/) Ismételt és sorozatos adatbevitel adatforrásból
              (/) Meglévő adat módosítás
-             (-) Adat vagy adatok törlése
+             (/) Adat vagy adatok törlése
              (/) Adatok lementése felületről
              (-) Kijelentkezés
     */
@@ -173,7 +172,7 @@ public class PortioWebsiteTesting {
         Assertions.assertTrue(result);
     }
 
-    @Test
+    @Test //Adat vagy adatok törlése
     public void deleteAccountTest() {
         int numberOfTestDataRow = 5;
         String accountHandlerListPath = "files/multivaluedMapForAccountHandlingInFile.csv";
@@ -185,7 +184,7 @@ public class PortioWebsiteTesting {
         MethodsForTests.deleteFile(accountHandlerListPath);
         MethodsForTests.MapToFiles(accountHandlerListPath, generatedData);
         List<List<String>> listForAccountHandling = MethodsForTests.fromFileToStringList(accountHandlerListPath);
-        for (int i = 0; i < listForAccountHandling.size() -1; i++) {
+        for (int i = 0; i < listForAccountHandling.size() - 1; i++) {
             page.registrationProcess(
                     listForAccountHandling.get(i).get(0),
                     listForAccountHandling.get(i).get(1),
@@ -201,6 +200,17 @@ public class PortioWebsiteTesting {
         page.deleteAccount();
 
         Assertions.assertNotEquals(numberOfTestDataRow, page.cookiesCounter()); //ha nem ugyanaz, akkor törölve lett account
+    }
+
+    @Test
+    public void LogoutTest() {
+        LandingPage page = (LandingPage) PageFactory.pageSwitcher("LandingPage", driver);
+        page.toTheWebsite();
+        Allure.addAttachment("loggedIn", new ByteArrayInputStream(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES)));
+        page.clickOnLogout();
+        Allure.addAttachment("loggedOut", new ByteArrayInputStream(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES)));
+
+        Assertions.assertTrue(page.isLoggedOut());
     }
 
     @AfterEach

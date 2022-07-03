@@ -37,8 +37,12 @@ public class IndexPage {
     private final By loginPasswordXpath = By.xpath("//*[@id=\"password\"]");
     private final By loginLoginButton = By.xpath("//*[@id=\"login\"]//*[@class=\"form\"]//*[@onclick=\"myFunction()\"]");
 
+
+    private final By logOutButton = By.xpath("//*[@onclick='logout()']");
+    private final By openPage = By.xpath("//body[@onload='openPage()']");
+
     public void buttonClicker(By buttonXPath) {
-            driver.findElement(buttonXPath).click();
+        driver.findElement(buttonXPath).click();
     }
 
     public void inputFieldLoader(By inputFieldXPath, String text) {
@@ -50,7 +54,7 @@ public class IndexPage {
         //működhetne így is: Boolean Display = driver.findElement(By.xpath("//*[@id='next']")).isDisplayed();
     }
 
-    public List<WebElement> elementsFinder(By xpath){
+    public List<WebElement> elementsFinder(By xpath) {
         return driver.findElements(xpath);
     }
 
@@ -119,6 +123,13 @@ public class IndexPage {
         logIn("name", "password");
     }
 
+    public void clickOnLogout() {
+        buttonClicker(logOutButton);
+    }
+
+    public Boolean isLoggedOut() {
+        return driver.findElement(openPage).isDisplayed();
+    }
 
 
 }
