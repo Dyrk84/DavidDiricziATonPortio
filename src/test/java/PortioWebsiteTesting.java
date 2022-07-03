@@ -52,7 +52,7 @@ public class PortioWebsiteTesting {
              (/) Ismételt és sorozatos adatbevitel adatforrásból
              (/) Meglévő adat módosítás
              (-) Adat vagy adatok törlése
-             (-) Adatok lementése felületről
+             (/) Adatok lementése felületről
              (-) Kijelentkezés
     */
     @Test //Adatkezelési nyilatkozat használata
@@ -171,6 +171,36 @@ public class PortioWebsiteTesting {
         boolean result = (filesNames.size() > 6 && filesNames.size() < 13); //Egy oldalon 6 kép van és összesen 2 oldal van
 
         Assertions.assertTrue(result);
+    }
+
+    @Test
+    public void deleteAccountTest() {
+        int numberOfTestDataRow = 5;
+        String accountHandlerListPath = "files/multivaluedMapForAccountHandlingInFile.csv";
+
+        ProfilePage page = (ProfilePage) PageFactory.pageSwitcher("ProfilePage", driver);
+        page.navigateToURL();
+        page.closeTheTermsAndConditionsPopUp();
+        MultiValuedMap<Integer, String> generatedData = MethodsForTests.multivaluedMapWriterForAccountHandling(numberOfTestDataRow);
+        MethodsForTests.deleteFile(accountHandlerListPath);
+        MethodsForTests.MapToFiles(accountHandlerListPath, generatedData);
+        List<List<String>> listForAccountHandling = MethodsForTests.fromFileToStringList(accountHandlerListPath);
+        for (int i = 0; i < listForAccountHandling.size() -1; i++) {
+            page.registrationProcess(
+                    listForAccountHandling.get(i).get(0),
+                    listForAccountHandling.get(i).get(1),
+                    listForAccountHandling.get(i).get(2),
+                    listForAccountHandling.get(i).get(3)
+            );
+            String actual = page.showRegistrationMessage();
+            Assertions.assertEquals("User registered!", actual); //mindegyikre megnézem, hogy sikerült-e regisztrálni
+            page.registrationFieldsClearer();
+        }
+        page.logIn(listForAccountHandling.get(0).get(0), listForAccountHandling.get(0).get(1));
+        page.clickOnProfileButton();
+        page.deleteAccount();
+
+        Assertions.assertNotEquals(numberOfTestDataRow, page.cookiesCounter()); //ha nem ugyanaz, akkor törölve lett account
     }
 
     @AfterEach

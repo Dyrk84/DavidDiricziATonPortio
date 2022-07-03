@@ -11,6 +11,9 @@ public class ProfilePage extends IndexPage {
     private final By bioInput = By.id("bio");
     private final By phoneInput = By.id("phone-number");
     private final By saveButton = By.xpath("//*[@onclick='editUser()']");
+    
+    private final By deleteAccountButton = By.xpath("//*[@onclick='showRealDeleteAccBtn()']");
+    private final By sureDeleteAccountButton = By.id("delete-account-btn");
 
     public void clickOnProfileButton() {
         buttonClicker(profileButton);
@@ -30,5 +33,10 @@ public class ProfilePage extends IndexPage {
         String cookieString = driver.manage().getCookieNamed(profileName).getValue(); //kiszedi Stringbe annak a cookienak az adatait, aminek a neve a profileName paraméter
 
         return cookieString.contains(name) && cookieString.contains(bio) && cookieString.contains(phone);
+    }
+
+    public void deleteAccount(){
+        buttonClicker(deleteAccountButton);
+        buttonClicker(sureDeleteAccountButton);
     }
 }
