@@ -5,6 +5,7 @@ import org.openqa.selenium.WebElement;
 import java.time.Duration;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.concurrent.TimeUnit;
 
 public class IndexPage {
 
@@ -73,7 +74,7 @@ public class IndexPage {
 
     // (/) Regisztráció
     public void registrationProcess(String name, String password, String email, String description) {
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(3));
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         if (validationForTests(registrationSuccessXpath, cssValueNameReg, cssValueReg)) {
             buttonClicker(registerTabXpath);
         }
