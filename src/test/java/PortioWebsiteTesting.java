@@ -32,7 +32,6 @@ public class PortioWebsiteTesting {
         options.addArguments("--headless");
         options.addArguments("--window-size=1920,1080");
         options.addArguments("start-maximized");
-        options.addArguments("--incognito");
 
         driver = new ChromeDriver(options);
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
