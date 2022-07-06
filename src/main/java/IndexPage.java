@@ -1,10 +1,12 @@
 import org.openqa.selenium.By;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import java.time.Duration;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class IndexPage {
@@ -101,7 +103,8 @@ public class IndexPage {
     }
 
     public int cookiesCounter() {
-        return driver.manage().getCookies().size();
+        Set<Cookie> cookiesList = driver.manage().getCookies();
+        return driver.manage().getCookies().size()-1; //because first cookie is Tomi's account
     }
 
     // (/) Bejelentkezés

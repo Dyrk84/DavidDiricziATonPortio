@@ -13,9 +13,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.time.Duration;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class PortioWebsiteTesting {
@@ -31,7 +29,7 @@ public class PortioWebsiteTesting {
         options.addArguments("--disable-dev-shm-usage");
         options.addArguments("--disable-notifications");
         options.addArguments("--disable-extensions");
-        options.addArguments("--headless");
+        //options.addArguments("--headless");
         options.addArguments("--window-size=1920,1080");
         options.addArguments("start-maximized");
         options.addArguments("--incognito");
@@ -156,37 +154,39 @@ public class PortioWebsiteTesting {
         Assertions.assertTrue(cookieTestData); //a profilnév megegyezik, de már nem ugyanazok az adatok szerepelnek, így az átírás sikerült
     }
 
-//    @Test //Ismételt és sorozatos adatbevitel adatforrásból
-//    @Epic("Portio website testing")
-//    @Story("Multiple data input from file")
-//    @Description("I specify how many accounts I want to register, I create a list. I put this list into a file. " +
-//            "From this file I register 50 times with the data. After each registration I test if the registration was successful. " +
-//            "At the end of the test, I check if 50 cookies were actually created on the site.")
-//    @Severity(SeverityLevel.CRITICAL)
-//    public void registrationFromFileTest() {
-//        int numberOfTestDataRow = 50;
-//        String accountHandlerListPath = "files/multivaluedMapForAccountHandlingInFile.csv";
-//
-//        ProfilePage page = (ProfilePage) PageFactory.pageSwitcher("ProfilePage", driver);
-//        page.navigateToURL();
-//        page.closeTheTermsAndConditionsPopUp();
-//        MultiValuedMap<Integer, String> generatedData = MethodsForTests.multivaluedMapWriterForAccountHandling(numberOfTestDataRow);
-//        MethodsForTests.deleteFile(accountHandlerListPath);
-//        MethodsForTests.MapToFiles(accountHandlerListPath, generatedData);
-//        List<List<String>> listForAccountHandling = MethodsForTests.fromFileToStringList(accountHandlerListPath);
-//        for (int i = 0; i < listForAccountHandling.size() - 1; i++) {
-//            page.registrationProcess(
-//                    listForAccountHandling.get(i).get(0),
-//                    listForAccountHandling.get(i).get(1),
-//                    listForAccountHandling.get(i).get(2),
-//                    listForAccountHandling.get(i).get(3)
-//            );
-//            String actual = page.showRegistrationMessage();
-//            Assertions.assertEquals("User registered!", actual); //mindegyikre megnézem, hogy sikerült-e regisztrálni
-//            page.registrationFieldsClearer();
-//        }
-//        Assertions.assertEquals(numberOfTestDataRow, page.cookiesCounter()); //megnézem hogy a regisztrált accountok száma megegyezik-e a cookiek számával
-//    }
+    @Test //Ismételt és sorozatos adatbevitel adatforrásból
+    @Epic("Portio website testing")
+    @Story("Multiple data input from file")
+    @Description("I specify how many accounts I want to register, I create a list. I put this list into a file. " +
+            "From this file I register 50 times with the data. After each registration I test if the registration was successful. " +
+            "At the end of the test, I check if 50 cookies were actually created on the site.")
+    @Severity(SeverityLevel.CRITICAL)
+    public void registrationFromFileTest() {
+        int numberOfTestDataRow = 10;
+        String accountHandlerListPath = "files/multivaluedMapForAccountHandlingInFile.csv";
+
+        ProfilePage page = (ProfilePage) PageFactory.pageSwitcher("ProfilePage", driver);
+        page.navigateToURL();
+        page.closeTheTermsAndConditionsPopUp();
+        List<List<String>> generatedData = MethodsForTests.multivaluedMapWriterForAccountHandling(numberOfTestDataRow);
+        MethodsForTests.deleteFile(accountHandlerListPath);
+        MethodsForTests.MapToFiles(accountHandlerListPath, generatedData);
+        List<List<String>> listForAccountHandling = MethodsForTests.fromFileToStringList(accountHandlerListPath);
+        for (int i = 0; i < listForAccountHandling.size(); i++) {
+            page.registrationProcess(
+                    listForAccountHandling.get(i).get(0),
+                    listForAccountHandling.get(i).get(1),
+                    listForAccountHandling.get(i).get(2),
+                    listForAccountHandling.get(i).get(3)
+            );
+            String actual = page.showRegistrationMessage();
+            Assertions.assertEquals("User registered!", actual); //mindegyikre megnézem, hogy sikerült-e regisztrálni
+            page.registrationFieldsClearer();
+        }
+        int cookiesCounter = page.cookiesCounter();
+
+        Assertions.assertEquals(numberOfTestDataRow, cookiesCounter); //megnézem hogy a regisztrált accountok száma megegyezik-e a cookiek számával
+    }
 
     @Test //Adatok lementése felületről
     @Epic("Portio website testing")
@@ -214,40 +214,41 @@ public class PortioWebsiteTesting {
         Assertions.assertTrue(result);
     }
 
-//    @Test //Adat vagy adatok törlése
-//    @Epic("Portio website testing")
-//    @Story("Data deleting")
-//    @Description("I have registered five accounts and deleted one, and I will test to see if there are less than " +
-//            "5 cookies at the end of the test.")
-//    @Severity(SeverityLevel.CRITICAL)
-//    public void deleteAccountTest() {
-//        int numberOfTestDataRow = 5;
-//        String accountHandlerListPath = "files/multivaluedMapForAccountHandlingInFile.csv";
-//
-//        ProfilePage page = (ProfilePage) PageFactory.pageSwitcher("ProfilePage", driver);
-//        page.navigateToURL();
-//        page.closeTheTermsAndConditionsPopUp();
-//        MultiValuedMap<Integer, String> generatedData = MethodsForTests.multivaluedMapWriterForAccountHandling(numberOfTestDataRow);
-//        MethodsForTests.deleteFile(accountHandlerListPath);
-//        MethodsForTests.MapToFiles(accountHandlerListPath, generatedData);
-//        List<List<String>> listForAccountHandling = MethodsForTests.fromFileToStringList(accountHandlerListPath);
-//        for (int i = 0; i < listForAccountHandling.size() - 1; i++) {
-//            page.registrationProcess(
-//                    listForAccountHandling.get(i).get(0),
-//                    listForAccountHandling.get(i).get(1),
-//                    listForAccountHandling.get(i).get(2),
-//                    listForAccountHandling.get(i).get(3)
-//            );
-//            String actual = page.showRegistrationMessage();
-//            Assertions.assertEquals("User registered!", actual); //mindegyikre megnézem, hogy sikerült-e regisztrálni
-//            page.registrationFieldsClearer();
-//        }
-//        page.logIn(listForAccountHandling.get(0).get(0), listForAccountHandling.get(0).get(1));
-//        page.clickOnProfileButton();
-//        page.deleteAccount();
-//
-//        Assertions.assertNotEquals(numberOfTestDataRow, page.cookiesCounter()); //ha nem ugyanaz, akkor lett törölve account
-//    }
+    @Test //Adat vagy adatok törlése
+    @Epic("Portio website testing")
+    @Story("Data deleting")
+    @Description("I have registered five accounts and deleted one, and I will test to see if there are less than " +
+            "5 cookies at the end of the test.")
+    @Severity(SeverityLevel.CRITICAL)
+    public void deleteAccountTest() {
+        int numberOfTestDataRow = 5;
+        String accountHandlerListPath = "files/multivaluedMapForAccountHandlingInFile.csv";
+
+        ProfilePage page = (ProfilePage) PageFactory.pageSwitcher("ProfilePage", driver);
+        page.navigateToURL();
+        page.closeTheTermsAndConditionsPopUp();
+        List<List<String>> generatedData = MethodsForTests.multivaluedMapWriterForAccountHandling(numberOfTestDataRow);
+        MethodsForTests.deleteFile(accountHandlerListPath);
+        MethodsForTests.MapToFiles(accountHandlerListPath, generatedData);
+        List<List<String>> listForAccountHandling = MethodsForTests.fromFileToStringList(accountHandlerListPath);
+        for (int i = 0; i < listForAccountHandling.size(); i++) {
+            page.registrationProcess(
+                    listForAccountHandling.get(i).get(0),
+                    listForAccountHandling.get(i).get(1),
+                    listForAccountHandling.get(i).get(2),
+                    listForAccountHandling.get(i).get(3)
+            );
+            String actual = page.showRegistrationMessage();
+            Assertions.assertEquals("User registered!", actual); //mindegyikre megnézem, hogy sikerült-e regisztrálni
+            page.registrationFieldsClearer();
+        }
+        page.logIn(listForAccountHandling.get(0).get(0), listForAccountHandling.get(0).get(1));
+        page.clickOnProfileButton();
+        Assertions.assertEquals(numberOfTestDataRow, page.cookiesCounter());
+        page.deleteAccount();
+
+        Assertions.assertNotEquals(numberOfTestDataRow, page.cookiesCounter()); //ha nem ugyanaz, akkor lett törölve account
+    }
 
     @Test
     @Epic("Portio website testing")

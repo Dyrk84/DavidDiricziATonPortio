@@ -1,5 +1,6 @@
 //import org.apache.commons.collections4.MultiValuedMap;
 //import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
+
 import org.openqa.selenium.WebElement;
 
 import javax.imageio.ImageIO;
@@ -31,26 +32,35 @@ public class MethodsForTests {
         return listFromFileReader;
     }
 
-//    public static MultiValuedMap<Integer, String> multivaluedMapWriterForAccountHandling(int numberOfTestDataRow) {
-    //      MultiValuedMap<Integer, String> multivaluedMap = new ArrayListValuedHashMap<>();
-    //  for (int i = 0; i < numberOfTestDataRow; i++) {
-    //      multivaluedMap.putAll(i + 1, Arrays.asList("testName" + (i + 1), "passwordForTest" + (i + 1), "testemail" + (i + 1) + "@address.com", "test description text with number " + (i + 1)));
-    //  }
-    //  return multivaluedMap;
-    //}
+    public static List<List<String>> multivaluedMapWriterForAccountHandling(int numberOfTestDataRow) {
+        List<List<String>> multivaluedMap = new LinkedList<>();
+        for (int i = 0; i < numberOfTestDataRow; i++) {
+            String testName = "testName" + (i+1);
+            String passwordForTest = "passwordForTest" + (i + 1);
+            String testemail = "testemail" + (i + 1) + "@address.com";
+            String testDescription = "test description text with number " + (i + 1);
+            List<String> noNameList = new LinkedList<>();
+            noNameList.add(testName);
+            noNameList.add(passwordForTest);
+            noNameList.add(testemail);
+            noNameList.add(testDescription);
+            multivaluedMap.add(noNameList);
+        }
+        return multivaluedMap;
+    }
 
-    //public static void MapToFiles(String filePath, MultiValuedMap<Integer, String> multiValuedMap) {
-    //    try {
-    //      FileWriter accountHandlerFile = new FileWriter(filePath, true);
-    //      for (int i = 1; i < multiValuedMap.size() / 4 + 1; i++) {
-    //          String[] a = multiValuedMap.get(i).toArray(new String[4]);
-    //          accountHandlerFile.write(a[0] + "," + a[1] + "," + a[2] + "," + a[3] + "," + "\n");
-    //        }
-    //        accountHandlerFile.close();
-    //    } catch (Exception e) {
-    //        System.out.println("Record not saved" + e);
-//        }
-    //  }
+    public static void MapToFiles(String filePath, List<List<String>> multiValuedMap) {
+        try {
+            FileWriter accountHandlerFile = new FileWriter(filePath, true);
+            for (int i = 0; i < multiValuedMap.size(); i++) {
+                String[] a = multiValuedMap.get(i).toArray(new String[4]);
+                accountHandlerFile.write(a[0] + "," + a[1] + "," + a[2] + "," + a[3] + "," + "\n");
+            }
+            accountHandlerFile.close();
+        } catch (Exception e) {
+            System.out.println("Record not saved" + e);
+        }
+    }
 
     public static List<List<String>> fromFileToStringList(String filePath) {
         List<List<String>> listForAccountHandling = new ArrayList<>();
@@ -95,6 +105,7 @@ public class MethodsForTests {
             if (file.isFile()) {
                 filenames.add(file.getName());
             }
-        }return filenames;
+        }
+        return filenames;
     }
 }
