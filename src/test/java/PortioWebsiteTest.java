@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class PortioWebsiteTesting {
+public class PortioWebsiteTest {
 
     WebDriver driver;
 

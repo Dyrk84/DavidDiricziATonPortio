@@ -134,7 +134,5 @@ public class IndexPage {
     public Boolean isLoggedOut() {
         return driver.findElement(openPage).isDisplayed();
     }
-
-
 }
 
