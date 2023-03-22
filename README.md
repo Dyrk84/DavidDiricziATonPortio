@@ -33,3 +33,6 @@ A tesztesetek az alábbi funkciókat tesztelik:
  (/) Adatok lementése felületről
 
  (/) Kijelentkezés
+
+A teszteseteket tartalmazó táblázatot az alábbi linken lehet elérni:
+https://docs.google.com/spreadsheets/d/1NZTAVWFglrAr33emRhsa4niXhjJXyxHQE0b9yvf3myk/edit?usp=sharing
