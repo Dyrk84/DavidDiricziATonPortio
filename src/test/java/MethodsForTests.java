@@ -1,12 +1,4 @@
-//import org.apache.commons.collections4.MultiValuedMap;
-//import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
-
-import org.openqa.selenium.WebElement;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.URL;
 import java.util.*;
 
 public class MethodsForTests {

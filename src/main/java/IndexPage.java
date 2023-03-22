@@ -3,9 +3,7 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import java.time.Duration;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -35,7 +33,7 @@ public class IndexPage {
     private final String cssValueNameReg = "display";
     private final String cssValueReg = "block";
 
-    private final By loginTabXpath = By.xpath("//*[@id=\"register\"]//*[@id=\"login-form-button\"]"); //By.xpath("//*[@id=\"login-form-button\"]"); //*[@class="formGroup"]//*[@onclick="showLogin()"]
+    private final By loginTabXpath = By.xpath("//*[@id=\"register\"]//*[@id=\"login-form-button\"]");
     private final By loginUsernameXpath = By.xpath("//*[@id=\"email\"]");
     private final By loginPasswordXpath = By.xpath("//*[@id=\"password\"]");
     private final By loginLoginButton = By.xpath("//*[@id=\"login\"]//*[@class=\"form\"]//*[@onclick=\"myFunction()\"]");

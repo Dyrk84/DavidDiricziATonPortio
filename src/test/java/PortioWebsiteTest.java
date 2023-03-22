@@ -25,6 +25,7 @@ public class PortioWebsiteTest {
         WebDriverManager.chromedriver().setup();
 
         ChromeOptions options = new ChromeOptions();
+        options.addArguments("ignore-certificate-errors");
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
         options.addArguments("--disable-notifications");
@@ -50,8 +51,9 @@ public class PortioWebsiteTest {
              (/) Meglévő adat módosítás
              (/) Adat vagy adatok törlése
              (/) Adatok lementése felületről
-             (-) Kijelentkezés
+             (/) Kijelentkezés
     */
+
     @Test //Adatkezelési nyilatkozat használata
     @Epic("Portio website testing")
     @Story("Data privacy statement")
@@ -59,9 +61,9 @@ public class PortioWebsiteTest {
     @Severity(SeverityLevel.BLOCKER)
     public void privacyPolicyTest() {
         IndexPage page = PageFactory.pageSwitcher("IndexPage", driver);
-        page.navigateToURL(); //fellép az oldalra
-        page.closeTheTermsAndConditionsPopUp(); //becsukja a popupot
-        boolean actual = page.checkTermsAndConditionValidation(); //megnézi hogy a popup css-e mit ír, az alapján nézem, hogy becsukta-e a popupot
+        page.navigateToURL();
+        page.closeTheTermsAndConditionsPopUp();
+        boolean actual = page.checkTermsAndConditionValidation();
 
         Assertions.assertFalse(actual);
     }
@@ -161,7 +163,7 @@ public class PortioWebsiteTest {
             "At the end of the test, I check if 50 cookies were actually created on the site.")
     @Severity(SeverityLevel.CRITICAL)
     public void registrationFromFileTest() {
-        int numberOfTestDataRow = 10;
+        int numberOfTestDataRow = 50;
         String accountHandlerListPath = "files/multivaluedMapForAccountHandlingInFile.csv";
 
         ProfilePage page = (ProfilePage) PageFactory.pageSwitcher("ProfilePage", driver);
